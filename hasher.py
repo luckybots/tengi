@@ -1,0 +1,41 @@
+import hashlib
+from typing import Any, Optional
+import base64
+import logging
+
+from tengine.config import Config
+
+logger = logging.getLogger(__file__)
+
+
+class Hasher:
+    def __init__(self, config: Config):
+        self.config = config
+
+    def trimmed(self, v: Any) -> Optional[str]:
+        if v is None:
+            return None
+
+        s = str(v)
+        salt = None
+        if 'hash_salt' in self.config:
+            salt = self.config['hash_salt']
+
+        if (salt is not None) and (salt != ''):
+            s = s + salt
+        else:
+            logger.warning('Setup salt to make hash protected')
+
+        # 10 bytes of data -> 16 symbols string
+        hash_bytes = None
+        if 'hash_bytes' in self.config:
+            hash_bytes = self.config['hash_bytes']
+            if hash_bytes <= 0:
+                logger.error(f'Hash bytes is wrong {hash_bytes}, ignoring it')
+                hash_bytes = None
+
+        s_bytes = s.encode('utf-8')
+        hash_result = hashlib.sha1(s_bytes)
+        bytes_taken = hash_result.digest() if hash_bytes is None else hash_result.digest()[-hash_bytes:]
+        result = base64.b32encode(bytes_taken).decode('utf-8').rstrip('=')
+        return result
