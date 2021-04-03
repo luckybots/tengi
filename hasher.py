@@ -12,7 +12,10 @@ class Hasher:
     def __init__(self, config: Config):
         self.config = config
 
-    def trimmed(self, v: Any) -> Optional[str]:
+    def trimmed(self, v: Any, hash_bytes=None) -> Optional[str]:
+        """
+        param hash_bytes: how many bytes to hake for the trimmed hash, 10 bytes of data -> 16 symbols string
+        """
         if v is None:
             return None
 
@@ -26,13 +29,12 @@ class Hasher:
         else:
             logger.warning('Setup salt to make hash protected')
 
-        # 10 bytes of data -> 16 symbols string
-        hash_bytes = None
-        if 'hash_bytes' in self.config:
+        if (hash_bytes is None) and ('hash_bytes' in self.config):
             hash_bytes = self.config['hash_bytes']
-            if hash_bytes <= 0:
-                logger.error(f'Hash bytes is wrong {hash_bytes}, ignoring it')
-                hash_bytes = None
+
+        if hash_bytes <= 0:
+            logger.error(f'Hash bytes is wrong {hash_bytes}, ignoring it')
+            hash_bytes = None
 
         s_bytes = s.encode('utf-8')
         hash_result = hashlib.sha1(s_bytes)

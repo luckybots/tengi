@@ -32,11 +32,11 @@ class TelegramInboxHub:
                     self.handlers[ut].append(h)
 
     def update(self):
-        try:
-            allowed_updates = list(self.handlers.keys())
-            updates = self.telegram_cursor.get_new_updates(allowed_updates=allowed_updates)
+        allowed_updates = list(self.handlers.keys())
+        updates = self.telegram_cursor.get_new_updates(allowed_updates=allowed_updates)
 
-            for u in updates:
+        for u in updates:
+            try:
                 arr_update_type = [ut for ut in allowed_updates if (getattr(u, ut) is not None)]
                 assert len(arr_update_type) == 1, f'Update object contains multiple update types: {arr_update_type}'
                 update_type = arr_update_type[0]
@@ -53,8 +53,8 @@ class TelegramInboxHub:
                                                handler_func=handler_func)
                 if not handled:
                     logger.info(f'Update not handled: {update_type}, {u.update_id}')
-        except Exception as ex:
-            logger.exception(ex)
+            except Exception as ex:
+                logger.exception(ex)
 
     @staticmethod
     def _chain_handlers(handlers: List[TelegramInboxHandler],
