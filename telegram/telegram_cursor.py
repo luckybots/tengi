@@ -9,9 +9,10 @@ logger = logging.getLogger(__file__)
 
 
 class TelegramCursor:
-    def __init__(self, bot: TelegramBot, look_back_days: float):
+    def __init__(self, bot: TelegramBot, look_back_days: float, long_polling_timeout: float = 20):
         self.bot = bot
         self.look_back_days = look_back_days
+        self.long_polling_timeout = long_polling_timeout
         self.last_bot_update_id = None
 
     def look_back(self, allowed_updates):
@@ -54,7 +55,7 @@ class TelegramCursor:
             else:
                 self.last_bot_update_id = -1
 
-        long_polling_timeout = 20 if (not look_back_updates) else 0
+        long_polling_timeout = self.long_polling_timeout if (not look_back_updates) else 0
         updates: List[types.Update] = self.bot.get_updates(offset=self.last_bot_update_id + 1,
                                                            long_polling_timeout=long_polling_timeout,
                                                            allowed_updates=allowed_updates)
