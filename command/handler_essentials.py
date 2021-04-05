@@ -1,4 +1,8 @@
+import logging
+
 from tengine.command.command_handler import *
+
+logger = logging.getLogger(__file__)
 
 
 class CommandHandlerEssentials(CommandHandler):
@@ -27,9 +31,15 @@ class CommandHandlerEssentials(CommandHandler):
                telegram_bot: TelegramBot,
                command_parser: CommandParser):
         if args.command == '/start':
-            telegram_bot.send_text(chat_id, config['response_start'])
+            if 'response_start' in config:
+                telegram_bot.send_text(chat_id, config['response_start'])
+            else:
+                logger.warning(f'Setup "response_start" in config to respond to {args.command}')
         elif args.command == '/help':
-            telegram_bot.send_text(chat_id, config['response_help'])
+            if 'response_help' in config:
+                telegram_bot.send_text(chat_id, config['response_help'])
+            else:
+                logger.warning(f'Setup "response_help" in config to respond to {args.command}')
         elif args.command == '/help2':
             commands_help_message = '<pre>' + command_parser.format_help() + '</pre>'
             telegram_bot.send_text(chat_id, commands_help_message)
