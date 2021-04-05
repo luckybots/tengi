@@ -2,7 +2,7 @@ from typing import Iterable
 from telebot.types import Message
 from tengine import event
 from tengine.telegram.telegram_bot import EV_TEL_RECEIVED_MESSAGES
-from tengine.preserve.preserver import *
+from tengine.state.preserver import *
 
 
 class ChatIdPreserver(Preserver):

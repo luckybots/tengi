@@ -91,3 +91,28 @@ def is_group_message(message: types.Message):
     if (message.chat is None) or (message.chat.type not in ['group', 'supergroup']):
         return False
     return True
+
+
+def is_int_chat_id(str_chat_id: str):
+    try:
+        int(str_chat_id)
+        result = True
+    except ValueError:
+        result = False
+    return result
+
+
+def is_proper_chat_id(str_chat_id: str):
+    result = is_int_chat_id(str_chat_id) or \
+             (str_chat_id and (str_chat_id[0] == '@'))
+    return result
+
+
+def get_short_chat_id(chat_id: int):
+    result = chat_id
+    str_chat_id = str(chat_id)
+    prefix = '-100'
+    if str_chat_id.startswith(prefix):
+        short_str_chat_id = str_chat_id[len(prefix):]
+        result = int(short_str_chat_id)
+    return result
