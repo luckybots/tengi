@@ -1,6 +1,7 @@
 import json
 from json import JSONDecodeError
 from telebot import types
+from typing import Union
 
 
 def encode_button_data(handler: str,
@@ -115,6 +116,13 @@ def is_int_chat_id(str_chat_id: str):
 def is_proper_chat_id(str_chat_id: str):
     result = is_int_chat_id(str_chat_id) or \
              (str_chat_id and (str_chat_id[0] == '@'))
+    return result
+
+
+def to_int_chat_id_if_possible(str_chat_id: str) -> Union[str, int]:
+    result = str_chat_id
+    if is_int_chat_id(str_chat_id):
+        result = int(str_chat_id)
     return result
 
 
