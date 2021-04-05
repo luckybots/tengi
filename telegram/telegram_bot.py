@@ -1,9 +1,11 @@
 import telebot
 from telebot import types
+from telebot.apihelper import ApiTelegramException
 from typing import Collection, List
 import logging
 
 from tengine import event
+from tengine.telegram import telegram_error
 
 logger = logging.getLogger(__file__)
 
@@ -118,8 +120,8 @@ class TelegramBot:
                                                                limit=limit,
                                                                long_polling_timeout=long_polling_timeout,
                                                                allowed_updates=allowed_updates)
-        except telebot.apihelper.ApiTelegramException as ex:
-            if try_delete_webhook:
+        except ApiTelegramException as ex:
+            if try_delete_webhook and (ex.error_code == telegram_error.CONFLICT):
                 logger.info(f'Got Telegram exception on get updates, will try to remove webhook & repeat: {ex}')
                 self.bot.delete_webhook(drop_pending_updates=False)
                 updates = self.get_updates(offset=offset,
