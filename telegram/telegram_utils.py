@@ -1,4 +1,5 @@
 import json
+from json import JSONDecodeError
 from telebot import types
 
 
@@ -13,6 +14,15 @@ def encode_button_data(handler: str,
     # Keyboard button data should be <=64 bytes https://core.telegram.org/bots/api#inlinekeyboardbutton
     assert len(data_bytes) <= 64, f'data is too long, {len(data_bytes)} > 64'
     return data_str
+
+
+def is_button_data_encoded(data: str) -> bool:
+    try:
+        data_dict = json.loads(data)
+        result = all([key in data_dict for key in ['h', 'c', 'r']])
+    except JSONDecodeError:
+        result = False
+    return result
 
 
 def decode_button_data(data: str):
