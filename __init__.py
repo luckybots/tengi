@@ -21,6 +21,7 @@ from tengine.csv_log.csv_logger import CsvLogger
 from tengine.csv_log.messages_logger import MessagesLogger
 from tengine.hack import jsonstore_hack
 from tengine.state.preserver import Preserver
+from tengine.state.timed_preserver import TimedPreserver
 from tengine.state.abuse_detector import AbuseDetector
 from tengine.state.abuse_janitor import AbuseJanitor
 from tengine.state.chat_id_preserver import ChatIdPreserver
