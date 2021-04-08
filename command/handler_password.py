@@ -13,6 +13,7 @@ class CommandHandlerPassword(CommandHandler):
     def handle(self,
                config: Config,
                chat_id,
+               message: Message,
                args: Namespace,
                telegram_bot: TelegramBot,
                command_parser: CommandParser):

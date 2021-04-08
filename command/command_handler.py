@@ -1,6 +1,7 @@
 import abc
 from argparse import Namespace
 from typing import Iterable
+from telebot.types import Message
 
 from tengine.telegram.telegram_bot import TelegramBot
 from tengine.command.card import CommandCard
@@ -17,6 +18,7 @@ class CommandHandler:
     def handle(self,
                config: Config,
                chat_id,
+               message: Message,
                args: Namespace,
                telegram_bot: TelegramBot,
                command_parser: CommandParser):

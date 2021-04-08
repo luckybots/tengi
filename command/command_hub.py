@@ -102,6 +102,7 @@ class CommandHub(TelegramInboxHandler):
             try:
                 self.handlers[command_str].handle(config=self.config,
                                                   chat_id=chat_id,
+                                                  message=message,
                                                   args=args,
                                                   telegram_bot=self.telegram_bot,
                                                   command_parser=self.parser)
