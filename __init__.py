@@ -16,6 +16,7 @@ from tengine.command.command_parser import CommandParser
 from tengine.command.param import CommandParam
 from tengine.command.card import CommandCard
 from tengine.command.command_hub import CommandHub
+from tengine.command import tengine_command_params
 from tengine.hasher import Hasher
 from tengine.csv_log.csv_logger import CsvLogger
 from tengine.csv_log.messages_logger import MessagesLogger
