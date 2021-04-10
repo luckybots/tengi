@@ -8,8 +8,8 @@ from tengine.command.param import CommandParam
 
 
 class CommandParser(argparse.ArgumentParser):
-    password_pattern_str = r'(?i)([^\w_]+password\s+)(\S+)'
-    password_pattern = re.compile(password_pattern_str)
+    secret_pattern_str = r'(?i)([^\w_]+(password|bot_token)\s+)(\S+)'
+    secret_pattern = re.compile(secret_pattern_str)
 
     def __init__(self, cards: Iterable[CommandCard], params: Iterable[CommandParam]):
         super().__init__(add_help=False, formatter_class=argparse.RawTextHelpFormatter)
@@ -74,15 +74,15 @@ class CommandParser(argparse.ArgumentParser):
         else:
             return is_command
 
-    def contains_password(self, text):
+    def contains_secret(self, text):
         if text is None:
             return False
-        result = self.password_pattern.search(text) is not None
+        result = self.secret_pattern.search(text) is not None
         return result
 
-    def hide_password(self, text):
-        # \1 represents text before password, \2 (the replaced text) -- the password itself
-        text_w_hide = self.password_pattern.sub(r'\1[HIDDEN]', text)
+    def hide_secret(self, text):
+        # \1 represents text before password(or other secret), \2 (the replaced text) -- the password itself
+        text_w_hide = self.secret_pattern.sub(r'\1[HIDDEN]', text)
         return text_w_hide
 
     def error(self, message):

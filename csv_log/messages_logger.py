@@ -3,7 +3,7 @@ from typing import Iterable
 
 from tengine.csv_log.csv_logger import *
 from tengine import CommandParser, event, Hasher
-from tengine.telegram.telegram_utils import encode_case_id, get_file_id
+from tengine.telegram.telegram_bot_utils import encode_case_id, get_file_id
 from tengine.telegram.telegram_bot import EV_TEL_RECEIVED_MESSAGES, EV_TEL_SENT_MESSAGE
 
 
@@ -26,8 +26,8 @@ class MessagesLogger(CsvLogger):
             text = m.caption
 
         if hide_command_password:
-            if self.command_parser.is_command(text) and self.command_parser.contains_password(text):
-                text = self.command_parser.hide_password(text)
+            if self.command_parser.is_command(text) and self.command_parser.contains_secret(text):
+                text = self.command_parser.hide_secret(text)
 
         row_dict = {
             'case_hash': self.hasher.trimmed(case_id),

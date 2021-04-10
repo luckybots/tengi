@@ -67,9 +67,9 @@ class CommandHub(TelegramInboxHandler):
             return False
 
         # Hide password if it's in the command
-        if self.parser.contains_password(text):
+        if self.parser.contains_secret(text):
             try:
-                text_w_hide = self.parser.hide_password(text)
+                text_w_hide = self.parser.hide_secret(text)
                 self.telegram_bot.delete_message(chat_id, message.message_id)
                 self.telegram_bot.send_text(chat_id, text_w_hide)
             except ApiTelegramException as ex:

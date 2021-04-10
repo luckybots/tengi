@@ -2,12 +2,13 @@ import logging
 
 from tengine.app import App
 from tengine.config import Config
-from tengine.telegram import telegram_utils
+from tengine.telegram import telegram_bot_utils, telegram_api_utils
 from tengine.telegram.telegram_bot import TelegramBot
 from tengine.telegram.telegram_cursor import TelegramCursor
 from tengine.telegram.inbox_hub import TelegramInboxHub
 from tengine.telegram.inbox_handler import TelegramInboxHandler
 from tengine.telegram import telegram_error
+from tengine.telegram.telegram_api import TelegramApi
 from tengine.command.command_handler import CommandHandler
 from tengine.command.handler_essentials import CommandHandlerEssentials
 from tengine.command.handler_password import CommandHandlerPassword
