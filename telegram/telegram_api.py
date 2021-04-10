@@ -16,11 +16,20 @@ class TelegramApi:
         self.api_session_name = api_session_name
         self.api_id = api_id
         self.api_hash = api_hash
+        asyncio.run(self._setup_session())
 
     def _get_api_client(self):
         return TelegramClient(session=self.api_session_name,
                               api_id=self.api_id,
                               api_hash=self.api_hash)
+
+    async def _setup_session(self):
+        """
+        Creates a session object and caches it on disk, so next requests will reuse it and don't ask for phone number
+        """
+        api_client = self._get_api_client()
+        async with api_client:
+            pass
 
     def get_chat_message(self, chat_id, message_id) -> Message:
         return asyncio.run(self.get_chat_message_async(chat_id=chat_id,
