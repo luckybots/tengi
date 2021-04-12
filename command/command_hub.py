@@ -6,6 +6,8 @@ from tengine.command.command_parser import CommandParser
 from tengine.config import Config
 from tengine.telegram.telegram_bot import TelegramBot
 from tengine.telegram.inbox_handler import *
+from tengine.command.command_context import CommandContext
+from tengine.command.command_error import CommandMissingArgError
 
 logger = logging.getLogger(__file__)
 
@@ -90,14 +92,19 @@ class CommandHub(TelegramInboxHandler):
             response = self.config['response_unknown_command'].format(first_word=command_str)
             self.telegram_bot.send_text(chat_id=chat_id, text=response)
         else:
+            context = CommandContext(telegram_bot=self.telegram_bot,
+                                     sender_message=message,
+                                     config=self.config,
+                                     parser=self.parser,
+                                     args=args)
             try:
-                self.handlers[command_str].handle(sender_chat_id=chat_id,
-                                                  sender_message=message,
-                                                  args=args)
+                self.handlers[command_str].handle(context)
+            except CommandMissingArgError as ex:
+                context.reply(str(ex), log_level=logging.INFO)
             except Exception as ex:
                 logger.exception(ex)
                 if is_password_correct:
-                    self.telegram_bot.send_text(chat_id, f'Exception: {ex}')
+                    context.reply(str(ex), log_level=None)
         return True
 
     def check_password(self, args, chat_id):

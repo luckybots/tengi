@@ -16,54 +16,39 @@ class CommandHandlerConfig(CommandHandler):
                             description='Admin. Sets config variable',
                             is_admin=True)]
 
-    def handle(self,
-               sender_chat_id,
-               sender_message: Message,
-               args: Namespace):
-        var_name = args.name
+    def handle(self, context: CommandContext):
+        var_name = context.get_mandatory_arg('name')
 
-        if var_name is None:
-            logger.info(f'Received {args.command} command without --name')
-            self.telegram_bot.send_text(sender_chat_id, '--name is required')
+        if var_name in self._get_protected_vars(context.config):
+            logger.info(f'Received {context.command} command with protected --name {var_name}')
+            context.reply(f'{var_name} protected')
             return
 
-        if var_name in self._get_protected_vars(self.config):
-            logger.info(f'Received {args.command} command with protected --name {var_name}')
-            self.telegram_bot.send_text(sender_chat_id, f'{var_name} protected')
+        if var_name not in context.config:
+            logger.info(f'Received {context.command} command with unknown --name {var_name}')
+            context.reply(f'{var_name} not in config')
             return
 
-        if var_name not in self.config:
-            logger.info(f'Received {args.command} command with unknown --name {var_name}')
-            self.telegram_bot.send_text(sender_chat_id, f'{var_name} not in config')
-            return
+        var_old_value = context.config[var_name]
 
-        var_old_value = self.config[var_name]
-
-        if args.command == '/get_config':
-            logger.info(f'Config value get: {var_name}')
-            self.telegram_bot.send_text(sender_chat_id, str(var_old_value))
-        elif args.command == '/set_config':
-            var_new_value = args.value
-
-            if var_new_value is None:
-                logger.info(f'Received {args.command} command without --value')
-                self.telegram_bot.send_text(sender_chat_id, '--value is required')
-                return
+        if context.command == '/get_config':
+            context.reply(str(var_old_value), log_level=logging.INFO)
+        elif context.command == '/set_config':
+            var_new_value = context.get_mandatory_arg('value')
 
             if type(var_old_value) != str:
                 var_new_value = json.loads(var_new_value)
 
             if type(var_old_value) != type(var_new_value):
-                logger.info(f'Config value set, types mismatch: {var_name}')
-                self.telegram_bot.send_text(sender_chat_id, f'Value types mismatch: {var_old_value}, {var_new_value}')
+                context.reply(f'Value types mismatch: {var_old_value}, {var_new_value}',
+                              log_level=logging.INFO)
                 return
 
-            self.config[var_name] = var_new_value
-            logger.info(f'Config value set: {var_name}')
-            self.telegram_bot.send_text(sender_chat_id, 'Value set successfully')
+            context.config[var_name] = var_new_value
+            context.reply(f'Value {var_name} set successfully', log_level=logging.INFO)
             return
         else:
-            raise Exception(f'Unhandled command {args.command} (programmer mistake in if-cascade)')
+            raise Exception(f'Unhandled command {context.command} (programmer mistake in if-cascade)')
 
     @staticmethod
     def _get_protected_vars(config: Config):

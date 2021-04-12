@@ -27,6 +27,7 @@ class TelegramBot:
     def send_text(self,
                   chat_id,
                   text,
+                  reply_to_message_id=None,
                   buttons: Collection[str] = None,
                   buttons_data: Collection[str] = None,
                   buttons_columns=2):
@@ -34,7 +35,10 @@ class TelegramBot:
                                                 buttons_data=buttons_data,
                                                 buttons_columns=buttons_columns)
 
-        sent_message = self.bot.send_message(chat_id=chat_id, text=text, reply_markup=reply_markup)
+        sent_message = self.bot.send_message(chat_id=chat_id,
+                                             text=text,
+                                             reply_to_message_id=reply_to_message_id,
+                                             reply_markup=reply_markup)
         event.emitter.emit(EV_TEL_SENT_MESSAGE, sent_message)
 
     def resend_message(self,

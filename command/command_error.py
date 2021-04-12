@@ -1,0 +1,3 @@
+
+class CommandMissingArgError(Exception):
+    pass

@@ -9,6 +9,7 @@ from tengine.telegram.inbox_hub import TelegramInboxHub
 from tengine.telegram.inbox_handler import TelegramInboxHandler
 from tengine.telegram import telegram_error
 from tengine.telegram.telegram_api import TelegramApi
+from tengine.telegram.reply_context import ReplyContext, ReplyContextTelegram, ReplyContextSuppress
 from tengine.command.command_handler import CommandHandler
 from tengine.command.handler_essentials import CommandHandlerEssentials
 from tengine.command.handler_password import CommandHandlerPassword
@@ -19,6 +20,7 @@ from tengine.command.card import CommandCard
 from tengine.command.command_hub import CommandHub
 from tengine.command import tengine_command_params
 from tengine.command.handler_pool import CommandHandlerPool
+from tengine.command.command_error import *
 from tengine.hasher import Hasher
 from tengine.csv_log.csv_logger import CsvLogger
 from tengine.csv_log.messages_logger import MessagesLogger
