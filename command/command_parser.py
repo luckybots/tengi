@@ -2,20 +2,22 @@ import argparse
 import shlex
 import re
 from typing import Iterable
+import itertools
 
-from tengine.command.card import CommandCard
 from tengine.command.param import CommandParam
+from tengine.command.handler_pool import CommandHandlerPool
 
 
 class CommandParser(argparse.ArgumentParser):
     secret_pattern_str = r'(?i)([^\w_]+(password|bot_token)\s+)(\S+)'
     secret_pattern = re.compile(secret_pattern_str)
 
-    def __init__(self, cards: Iterable[CommandCard], params: Iterable[CommandParam]):
+    def __init__(self, handler_pool: CommandHandlerPool, params: Iterable[CommandParam]):
         super().__init__(add_help=False, formatter_class=argparse.RawTextHelpFormatter)
 
         self.error_message = None
 
+        cards = itertools.chain(*[h.get_cards() for h in handler_pool.handlers])
         arr_command_str = [x.command_str for x in cards]
         self.add_argument('command',
                           choices=arr_command_str,

@@ -1,11 +1,17 @@
 import logging
+from typing import Callable
 
 from tengine.command.command_handler import *
+from tengine.command.command_parser import CommandParser
 
 logger = logging.getLogger(__file__)
 
 
 class CommandHandlerEssentials(CommandHandler):
+    def __init__(self, config: Config, telegram_bot: TelegramBot, get_parser: Callable[[], CommandParser]):
+        super().__init__(config=config, telegram_bot=telegram_bot)
+        self.get_parser = get_parser
+
     def get_cards(self) -> Iterable[CommandCard]:
         return [CommandCard(command_str='/start',
                             description='Start working with a bot',
@@ -25,28 +31,25 @@ class CommandHandlerEssentials(CommandHandler):
                 ]
 
     def handle(self,
-               config: Config,
-               chat_id,
-               message: Message,
-               args: Namespace,
-               telegram_bot: TelegramBot,
-               command_parser: CommandParser):
+               sender_chat_id,
+               sender_message: Message,
+               args: Namespace):
         if args.command == '/start':
-            if 'response_start' in config:
-                telegram_bot.send_text(chat_id, config['response_start'])
+            if 'response_start' in self.config:
+                self.telegram_bot.send_text(sender_chat_id, self.config['response_start'])
             else:
                 logger.warning(f'Setup "response_start" in config to respond to {args.command}')
         elif args.command == '/help':
-            if 'response_help' in config:
-                telegram_bot.send_text(chat_id, config['response_help'])
+            if 'response_help' in self.config:
+                self.telegram_bot.send_text(sender_chat_id, self.config['response_help'])
             else:
                 logger.warning(f'Setup "response_help" in config to respond to {args.command}')
         elif args.command == '/help2':
-            commands_help_message = '<pre>' + command_parser.format_help() + '</pre>'
-            telegram_bot.send_text(chat_id, commands_help_message)
+            commands_help_message = '<pre>' + self.get_parser().format_help() + '</pre>'
+            self.telegram_bot.send_text(sender_chat_id, commands_help_message)
         elif args.command == '/ping':
-            telegram_bot.send_text(chat_id, 'pong')
+            self.telegram_bot.send_text(sender_chat_id, 'pong')
         elif args.command == '/chat_id':
-            telegram_bot.send_text(chat_id, chat_id)
+            self.telegram_bot.send_text(sender_chat_id, sender_chat_id)
         else:
             raise ValueError(f'Unhandled command: {args.command}')

@@ -1,9 +1,7 @@
-from typing import Iterable, Type
 import logging
 from telebot.apihelper import ApiTelegramException
 
-from tengine.command.command_handler import CommandHandler
-from tengine.command.param import CommandParam
+from tengine.command.handler_pool import CommandHandlerPool
 from tengine.command.command_parser import CommandParser
 from tengine.config import Config
 from tengine.telegram.telegram_bot import TelegramBot
@@ -15,28 +13,21 @@ logger = logging.getLogger(__file__)
 class CommandHub(TelegramInboxHandler):
     def __init__(self,
                  config: Config,
-                 handler_classes: Iterable[Type[CommandHandler]],
-                 params: Iterable[CommandParam],
-                 telegram_bot: TelegramBot):
+                 telegram_bot: TelegramBot,
+                 parser: CommandParser,
+                 handler_pool: CommandHandlerPool):
         self.config = config
         self.telegram_bot = telegram_bot
+        self.parser = parser
 
         self.handlers = {}
         self.is_admin_command = {}
-
-        cards = []
-        for h_class in handler_classes:
-            h = h_class()
+        for h in handler_pool.handlers:
             for card in h.get_cards():
                 if card.command_str in self.handlers:
                     raise Exception(f'Handler for {card.command_str} already added: {self.handlers[card.command_str]}')
                 self.handlers[card.command_str] = h
                 self.is_admin_command[card.command_str] = card.is_admin
-
-                cards.append(card)
-
-        self.parser = CommandParser(cards=cards,
-                                    params=params)
 
     def message(self, message: types.Message) -> bool:
         return self.try_handle_command(message)
@@ -100,12 +91,9 @@ class CommandHub(TelegramInboxHandler):
             self.telegram_bot.send_text(chat_id=chat_id, text=response)
         else:
             try:
-                self.handlers[command_str].handle(config=self.config,
-                                                  chat_id=chat_id,
-                                                  message=message,
-                                                  args=args,
-                                                  telegram_bot=self.telegram_bot,
-                                                  command_parser=self.parser)
+                self.handlers[command_str].handle(sender_chat_id=chat_id,
+                                                  sender_message=message,
+                                                  args=args)
             except Exception as ex:
                 logger.exception(ex)
                 if is_password_correct:

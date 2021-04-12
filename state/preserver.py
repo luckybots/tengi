@@ -10,7 +10,9 @@ class Preserver:
                                auto_commit=auto_commit)
 
     def _get_state_data(self) -> dict:
+        # noinspection PyProtectedMember
         return self.state._data
 
     def _save_state(self):
+        # noinspection PyProtectedMember
         self.state._save()
