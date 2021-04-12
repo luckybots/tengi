@@ -1,7 +1,7 @@
 import asyncio
 from telethon.sync import TelegramClient
 from telethon.tl.types import Message
-from typing import cast
+from typing import cast, List
 
 from tengine.telegram import telegram_bot_utils
 
@@ -49,3 +49,20 @@ class TelegramApi:
         # api_client.get_messages returns Message object in case of 1 message requested though TotalList declared
         msg = cast(Message, msg)
         return msg
+
+    def get_chat_messages_backward(self, chat_id, message_id, n_messages) -> List[Message]:
+        return asyncio.run(self.get_chat_messages_backward_async(chat_id=chat_id,
+                                                                 message_id=message_id,
+                                                                 n_messages=n_messages))
+
+    async def get_chat_messages_backward_async(self, chat_id, message_id, n_messages) -> List[Message]:
+        if type(chat_id) == str:
+            chat_id = telegram_bot_utils.to_int_chat_id_if_possible(chat_id)
+
+        api_client = self._get_api_client()
+        async with api_client:
+            arr_messages = []
+            gen = api_client.iter_messages(chat_id, max_id=message_id+1, limit=n_messages)
+            async for msg in gen:
+                arr_messages.append(msg)
+        return arr_messages
