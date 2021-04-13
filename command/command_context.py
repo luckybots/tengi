@@ -1,7 +1,7 @@
 from argparse import Namespace
 from typing import Any, TYPE_CHECKING
 from tengine.telegram.reply_context import *
-from tengine.config import Config
+from tengine.setup.config import Config
 from tengine.command.command_error import CommandMissingArgError
 
 if TYPE_CHECKING:

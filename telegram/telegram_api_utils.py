@@ -1,3 +1,4 @@
+from typing import Iterable
 from telebot import types as bot_types
 from telethon.tl import types as api_types
 
@@ -18,3 +19,10 @@ def api_to_bot_markup(api_markup: api_types.ReplyInlineMarkup) -> bot_types.Inli
             bot_r.append(bot_b)
         bot_markup.add(*bot_r)
     return bot_markup
+
+
+def iterate_buttons(message: api_types.Message) -> Iterable[api_types.KeyboardButton]:
+    if message.reply_markup is not None:
+        for row in message.reply_markup.rows:
+            for b in row.buttons:
+                yield b

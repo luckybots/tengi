@@ -3,7 +3,8 @@ from telebot.apihelper import ApiTelegramException
 
 from tengine.command.handler_pool import CommandHandlerPool
 from tengine.command.command_parser import CommandParser
-from tengine.config import Config
+from tengine.setup.config import Config
+from tengine.setup import config_utils
 from tengine.telegram.telegram_bot import TelegramBot
 from tengine.telegram.inbox_handler import *
 from tengine.command.command_context import CommandContext
@@ -75,51 +76,52 @@ class CommandHub(TelegramInboxHandler):
 
         if self.parser.error_message is not None:
             logger.debug(f'command handler parser error "{self.parser.error_message}"')
-            response = self.config['response_command_parser_error'].format(first_word=command_str)
-            self.telegram_bot.send_text(chat_id, response)
+            # Reply in private chats only as in groups multiple bots may be present
+            if message.chat.type == 'private':
+                response = config_utils.get_response_command_parser_error(config=self.config, command=command_str)
+                self.telegram_bot.send_text(chat_id, response)
             return True
 
         logger.info(f'Bot command: "{args.command}"')
 
         is_password_correct = self.check_password(args=args, chat_id=chat_id)
-
         if (message.chat.type != 'private') and (not is_password_correct):
             logger.info(f'Ignoring command as it is from non-admin in non-private chat')
-        elif command_str not in self.handlers:
-            response = self.config['response_unknown_command'].format(first_word=command_str)
+            return True
+
+        has_no_handler = command_str not in self.handlers
+        admin_fail_auth = self.is_admin_command[command_str] and (not is_password_correct)
+        if has_no_handler or admin_fail_auth:
+            response = config_utils.get_response_unknown_command(config=self.config, command=command_str)
             self.telegram_bot.send_text(chat_id=chat_id, text=response)
-        elif self.is_admin_command[command_str] and (not is_password_correct):
-            response = self.config['response_unknown_command'].format(first_word=command_str)
-            self.telegram_bot.send_text(chat_id=chat_id, text=response)
-        else:
-            context = CommandContext(telegram_bot=self.telegram_bot,
-                                     sender_message=message,
-                                     config=self.config,
-                                     parser=self.parser,
-                                     args=args)
-            try:
-                self.handlers[command_str].handle(context)
-            except CommandMissingArgError as ex:
-                context.reply(str(ex), log_level=logging.INFO)
-            except Exception as ex:
-                logger.exception(ex)
-                if is_password_correct:
-                    context.reply(str(ex), log_level=None)
+            return True
+
+        context = CommandContext(telegram_bot=self.telegram_bot,
+                                 sender_message=message,
+                                 config=self.config,
+                                 parser=self.parser,
+                                 args=args)
+        try:
+            self.handlers[command_str].handle(context)
+        except CommandMissingArgError as ex:
+            context.reply(str(ex), log_level=logging.INFO)
+        except Exception as ex:
+            logger.exception(ex)
+            if is_password_correct:
+                context.reply(str(ex), log_level=None)
         return True
 
     def check_password(self, args, chat_id):
-        password = args.password
-        if password is None:
-            remembered_passwords = self.config['remembered_passwords']
-            chat_id_str = str(chat_id)
-            rem_password = remembered_passwords.get(chat_id_str, None)
+        provided_password = args.password
+        admin_password = config_utils.try_get_admin_password(self.config)
+        if provided_password is None:
+            rem_password = config_utils.try_get_remembered_password(config=self.config, chat_id=chat_id)
             if rem_password is not None:
-                if rem_password == self.config['admin_password']:
+                if rem_password == admin_password:
                     logger.debug(f'Used remembered password')
-                    password = rem_password
+                    provided_password = rem_password
                 else:
                     logger.debug(f'Remembered password is outdated, forgetting')
-                    del remembered_passwords[chat_id_str]
-                    self.config['remembered_passwords'] = remembered_passwords
-        result = (password == self.config['admin_password'])
+                    config_utils.delete_remembered_password(config=self.config, chat_id=chat_id)
+        result = (provided_password == admin_password)
         return result

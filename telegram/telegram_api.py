@@ -66,3 +66,16 @@ class TelegramApi:
             async for msg in gen:
                 arr_messages.append(msg)
         return arr_messages
+
+    def get_chat_last_messages(self, chat_id, max_messages, max_excluded_id=0) -> List[Message]:
+        return asyncio.run(self.get_chat_last_messages_async(chat_id=chat_id,
+                                                             max_messages=max_messages,
+                                                             max_excluded_id=max_excluded_id))
+
+    async def get_chat_last_messages_async(self, chat_id, max_messages, max_excluded_id=0) -> List[Message]:
+        api_client = self._get_api_client()
+        async with api_client:
+            arr_messages = []
+            async for msg in api_client.iter_messages(chat_id, limit=max_messages, min_id=max_excluded_id):
+                arr_messages.append(msg)
+        return arr_messages

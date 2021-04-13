@@ -2,7 +2,7 @@ import logging
 import json
 
 from tengine.command.command_handler import *
-from tengine.config import Config
+from tengine.setup import config_utils
 
 logger = logging.getLogger(__file__)
 
@@ -19,7 +19,7 @@ class CommandHandlerConfig(CommandHandler):
     def handle(self, context: CommandContext):
         var_name = context.get_mandatory_arg('name')
 
-        if var_name in self._get_protected_vars(context.config):
+        if config_utils.is_variable_protected(config=context.config, variable=var_name):
             logger.info(f'Received {context.command} command with protected --name {var_name}')
             context.reply(f'{var_name} protected')
             return
@@ -50,9 +50,3 @@ class CommandHandlerConfig(CommandHandler):
         else:
             raise Exception(f'Unhandled command {context.command} (programmer mistake in if-cascade)')
 
-    @staticmethod
-    def _get_protected_vars(config: Config):
-        result = []
-        if 'protected_vars' in config:
-            result = config['protected_vars']
-        return result

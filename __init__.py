@@ -1,7 +1,7 @@
 import logging
 
-from tengine.app import App
-from tengine.config import Config
+from tengine.setup.app import App
+from tengine.setup.config import Config
 from tengine.telegram import telegram_bot_utils, telegram_api_utils
 from tengine.telegram.telegram_bot import TelegramBot
 from tengine.telegram.telegram_cursor import TelegramCursor

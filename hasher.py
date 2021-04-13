@@ -3,7 +3,7 @@ from typing import Any, Optional
 import base64
 import logging
 
-from tengine.config import Config
+from tengine.setup.config import Config
 
 logger = logging.getLogger(__file__)
 
@@ -32,7 +32,7 @@ class Hasher:
         if (hash_bytes is None) and ('hash_bytes' in self.config):
             hash_bytes = self.config['hash_bytes']
 
-        if hash_bytes <= 0:
+        if (hash_bytes is None) or (hash_bytes <= 0):
             logger.error(f'Hash bytes is wrong {hash_bytes}, ignoring it')
             hash_bytes = None
 

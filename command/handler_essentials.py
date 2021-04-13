@@ -1,6 +1,7 @@
 import logging
 
 from tengine.command.command_handler import *
+from tengine.setup import config_utils
 
 logger = logging.getLogger(__file__)
 
@@ -26,13 +27,15 @@ class CommandHandlerEssentials(CommandHandler):
 
     def handle(self, context: CommandContext):
         if context.command == '/start':
-            if 'response_start' in context.config:
-                context.reply(context.config['response_start'])
+            response_start = config_utils.try_get_response_start(context.config)
+            if response_start is not None:
+                context.reply(response_start)
             else:
                 logger.warning(f'Setup "response_start" in config to respond to {context.command}')
         elif context.command == '/help':
-            if 'response_help' in context.config:
-                context.reply(context.config['response_help'])
+            response_help = config_utils.try_get_response_help(context.config)
+            if response_help is not None:
+                context.reply(response_help)
             else:
                 logger.warning(f'Setup "response_help" in config to respond to {context.command}')
         elif context.command == '/help2':

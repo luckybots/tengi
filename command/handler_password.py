@@ -1,6 +1,7 @@
 import logging
 
 from tengine.command.command_handler import *
+from tengine.setup import config_utils
 
 
 class CommandHandlerPassword(CommandHandler):
@@ -13,19 +14,18 @@ class CommandHandlerPassword(CommandHandler):
                             is_admin=True)]
 
     def handle(self, context: CommandContext):
-        remembered_passwords = context.config['remembered_passwords']
         target_chat_id = context.sender_chat_id if (context.args.chat_id is None) else context.args.chat_id
-        target_chat_id_str = str(target_chat_id)
         if context.command == '/remember_password':
-            remembered_passwords[target_chat_id_str] = context.args.password
+            password = context.get_mandatory_arg('password')
+            config_utils.remember_password(config=context.config,
+                                           chat_id=target_chat_id,
+                                           password=password)
             context.reply('Remembered', log_level=logging.INFO)
         elif context.command == '/forget_password':
-            if target_chat_id_str in remembered_passwords:
-                del remembered_passwords[target_chat_id_str]
+            if config_utils.has_remembered_password(config=context.config, chat_id=target_chat_id):
+                config_utils.delete_remembered_password(config=context.config, chat_id=target_chat_id)
                 context.reply('Forgotten', log_level=logging.INFO)
             else:
                 context.reply('Was not remembered')
         else:
             raise ValueError(f'Unhandled command: {context.command}')
-
-        context.config['remembered_passwords'] = remembered_passwords
