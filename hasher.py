@@ -33,7 +33,7 @@ class Hasher:
             hash_bytes = self.config['hash_bytes']
 
         if (hash_bytes is None) or (hash_bytes <= 0):
-            logger.error(f'Hash bytes is wrong {hash_bytes}, ignoring it')
+            logger.warning(f'Hash bytes is wrong not not setup "{hash_bytes}", ignoring it')
             hash_bytes = None
 
         s_bytes = s.encode('utf-8')

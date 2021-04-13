@@ -30,14 +30,11 @@ class CommandHandlerEssentials(CommandHandler):
             response_start = config_utils.try_get_response_start(context.config)
             if response_start is not None:
                 context.reply(response_start)
-            else:
-                logger.warning(f'Setup "response_start" in config to respond to {context.command}')
+
         elif context.command == '/help':
             response_help = config_utils.try_get_response_help(context.config)
             if response_help is not None:
                 context.reply(response_help)
-            else:
-                logger.warning(f'Setup "response_help" in config to respond to {context.command}')
         elif context.command == '/help2':
             commands_help_message = '<pre>' + context.parser.format_help() + '</pre>'
             context.reply(commands_help_message)

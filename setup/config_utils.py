@@ -75,11 +75,15 @@ def get_response_unknown_command(config: Config, command: str):
 
 def try_get_response_start(config: Config) -> Optional[str]:
     result = config['response_start'] if ('response_start' in config) else None
+    if result is None:
+        logger.warning(f'Setup "response_start" in config to respond to /start')
     return result
 
 
 def try_get_response_help(config: Config) -> Optional[str]:
     result = config['response_help'] if ('response_help' in config) else None
+    if result is None:
+        logger.warning(f'Setup "response_start" in config to respond to /help')
     return result
 
 
