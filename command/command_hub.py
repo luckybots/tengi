@@ -84,7 +84,8 @@ class CommandHub(TelegramInboxHandler):
 
         logger.info(f'Bot command: "{args.command}"')
 
-        is_password_correct = self.check_password(args=args, chat_id=chat_id)
+        is_password_correct = self.check_password(args=args, chat_id=chat_id) or \
+            self.check_password(args=args, chat_id=message.from_user.id)
         if (message.chat.type != 'private') and (not is_password_correct):
             logger.info(f'Ignoring command as it is from non-admin in non-private chat')
             return True
