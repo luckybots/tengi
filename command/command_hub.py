@@ -33,6 +33,14 @@ class CommandHub(TelegramInboxHandler):
                 self.is_admin_command[card.command_str] = card.is_admin
 
     def message(self, message: types.Message) -> bool:
+        """
+        No need to check for message to be from other bot -- bots in Telegram don't receive messages from other bots
+            https://core.telegram.org/bots/faq
+        :param message:
+        :type message:
+        :return:
+        :rtype:
+        """
         return self.try_handle_command(message)
 
     def try_handle_command(self, message) -> bool:
