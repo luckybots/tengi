@@ -50,9 +50,12 @@ class TelegramBot:
         reply_markup = self._build_reply_markup(buttons=buttons,
                                                 buttons_data=buttons_data,
                                                 buttons_columns=buttons_columns)
+        reply_to_message_id = None if (src_message.reply_to_message is None) \
+            else src_message.reply_to_message.message_id
 
         params_dict = dict(chat_id=chat_id,
-                           reply_markup=reply_markup)
+                           reply_markup=reply_markup,
+                           reply_to_message_id=reply_to_message_id)
         if src_message.text is not None:
             params_dict['text'] = src_message.html_text
         elif src_message.caption is not None:
@@ -73,8 +76,26 @@ class TelegramBot:
         elif src_message.content_type == 'document':
             params_dict['data'] = src_message.document.file_id
             send_func = self.bot.send_document
+        elif src_message.content_type == 'sticker':
+            params_dict['data'] = src_message.sticker.file_id
+            send_func = self.bot.send_sticker
+        elif src_message.content_type == 'video_note':
+            params_dict['data'] = src_message.video_note.file_id
+            send_func = self.bot.send_video_note
+        elif src_message.content_type == 'voice':
+            params_dict['voice'] = src_message.voice.file_id
+            send_func = self.bot.send_voice
+        elif src_message.content_type == 'location':
+            params_dict['location'] = src_message.location
+            send_func = self.bot.send_location
+        elif src_message.content_type == 'contact':
+            params_dict['phone_number'] = src_message.contact.phone_number
+            params_dict['first_name'] = src_message.contact.first_name
+            params_dict['last_name'] = src_message.contact.last_name
+            params_dict['vcard'] = src_message.contact.vcard
+            send_func = self.bot.send_contact
         else:
-            raise Exception(f'Resending of {src_message.content_type} content not supported')
+            raise ValueError(f'Resending of {src_message.content_type} content not supported')
 
         assert send_func is not None
         sent_message = send_func(**params_dict)

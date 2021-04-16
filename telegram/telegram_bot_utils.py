@@ -1,7 +1,7 @@
 import json
 from json import JSONDecodeError
 from telebot import types
-from typing import Union
+from typing import Union, Iterable, List
 
 
 def encode_button_data(handler: str,
@@ -82,14 +82,18 @@ def message_contains_link(message: types.Message, link_entities=None):
     if link_entities is None:
         link_entities = ['text_link', 'url', 'phone_number', 'mention', 'email']
 
-    entities = []
-    if 'entities' in message.json:
-        entities.extend(message.json['entities'])
-    if 'caption_entities' in message.json:
-        entities.extend(message.json['caption_entities'])
+    return message_contains_entity(message, entity_types=link_entities)
 
-    has_link = any([x['type'] in link_entities for x in entities])
-    return has_link
+
+def message_contains_entity(message: types.Message, entity_types: Iterable[str]) -> bool:
+    message_entities: List[dict] = list()
+    if 'entities' in message.json:
+        message_entities.extend(message.json['entities'])
+    if 'caption_entities' in message.json:
+        message_entities.extend(message.json['caption_entities'])
+
+    has_one_of_entities = any([m['type'] in entity_types for m in message_entities])
+    return has_one_of_entities
 
 
 def is_private_message(message: types.Message):
