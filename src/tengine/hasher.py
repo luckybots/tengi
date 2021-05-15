@@ -20,20 +20,15 @@ class Hasher:
             return None
 
         s = str(v)
-        salt = None
-        if 'hash_salt' in self.config:
-            salt = self.config['hash_salt']
-
+        salt = self.config.try_get_warny('hash_salt', operation_name='improve hashed data protection')
         if (salt is not None) and (salt != ''):
             s = s + salt
-        else:
-            logger.warning('Setup salt to make hash protected')
 
-        if (hash_bytes is None) and ('hash_bytes' in self.config):
-            hash_bytes = self.config['hash_bytes']
+        if hash_bytes is None:
+            hash_bytes = self.config.try_get_warny('hash_bytes', operation_name='reduce hashes length')
 
-        if (hash_bytes is None) or (hash_bytes <= 0):
-            logger.warning(f'Hash bytes is wrong not not setup "{hash_bytes}", ignoring it')
+        if hash_bytes <= 0:
+            logger.warning(f'Hash bytes value should be >0, but not "{hash_bytes}", ignoring it')
             hash_bytes = None
 
         s_bytes = s.encode('utf-8')

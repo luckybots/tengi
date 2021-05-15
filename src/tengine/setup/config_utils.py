@@ -54,10 +54,7 @@ def try_get_remembered_password(config: Config, chat_id) -> Optional[str]:
 
 
 def try_get_admin_password(config: Config):
-    result = config['admin_password'] if ('admin_password' in config) else None
-    if result is None:
-        logger.warning(f'Set admin_password in the config')
-    return result
+    return config.try_get_warny('admin_password', operation_name='control access to admin commands')
 
 
 def get_response_command_parser_error(config: Config, command: str):
@@ -74,17 +71,8 @@ def get_response_unknown_command(config: Config, command: str):
 
 
 def try_get_response_start(config: Config) -> Optional[str]:
-    result = config['response_start'] if ('response_start' in config) else None
-    if result is None:
-        logger.warning(f'Setup "response_start" in config to respond to /start')
-    return result
+    return config.try_get_warny('response_start', operation_name='respond to /start')
 
 
 def try_get_response_help(config: Config) -> Optional[str]:
-    result = config['response_help'] if ('response_help' in config) else None
-    if result is None:
-        logger.warning(f'Setup "response_start" in config to respond to /help')
-    return result
-
-
-
+    return config.try_get_warny('response_help', operation_name='respond to /help')
