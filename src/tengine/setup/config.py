@@ -17,3 +17,4 @@ class Config(JsonStore):
                 missing_keys.append(k)
 
         assert len(missing_keys) == 0, f'Keys are missing from config: {self._path}: {missing_keys}'
+
