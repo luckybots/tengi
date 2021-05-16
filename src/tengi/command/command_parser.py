@@ -4,8 +4,8 @@ import re
 from typing import Iterable
 import itertools
 
-from tengine.command.param import CommandParam
-from tengine.command.handler_pool import CommandHandlerPool
+from tengi.command.param import CommandParam
+from tengi.command.handler_pool import CommandHandlerPool
 
 
 class CommandParser(argparse.ArgumentParser):

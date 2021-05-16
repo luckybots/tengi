@@ -3,7 +3,7 @@ from typing import List
 from datetime import datetime
 import logging
 
-from tengine.telegram.telegram_bot import TelegramBot
+from tengi.telegram.telegram_bot import TelegramBot
 
 logger = logging.getLogger(__file__)
 

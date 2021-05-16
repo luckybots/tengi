@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 
-from tengine.setup.config import Config
+from tengi.setup.config import Config
 
 logger = logging.getLogger(__file__)
 

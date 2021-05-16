@@ -1,7 +1,7 @@
 import logging
 from typing import Iterable, Callable, Any, List
-from tengine import TelegramCursor
-from tengine.telegram.inbox_handler import *
+from tengi import TelegramCursor
+from tengi.telegram.inbox_handler import *
 import inspect
 
 logger = logging.getLogger(__file__)

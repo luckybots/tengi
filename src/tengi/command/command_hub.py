@@ -1,14 +1,14 @@
 import logging
 from telebot.apihelper import ApiTelegramException
 
-from tengine.command.handler_pool import CommandHandlerPool
-from tengine.command.command_parser import CommandParser
-from tengine.setup.config import Config
-from tengine.setup import config_utils
-from tengine.telegram.telegram_bot import TelegramBot
-from tengine.telegram.inbox_handler import *
-from tengine.command.command_context import CommandContext
-from tengine.command.command_error import CommandMissingArgError
+from tengi.command.handler_pool import CommandHandlerPool
+from tengi.command.command_parser import CommandParser
+from tengi.setup.config import Config
+from tengi.setup import config_utils
+from tengi.telegram.telegram_bot import TelegramBot
+from tengi.telegram.inbox_handler import *
+from tengi.command.command_context import CommandContext
+from tengi.command.command_error import CommandMissingArgError
 
 logger = logging.getLogger(__file__)
 

@@ -3,7 +3,7 @@ from telethon.sync import TelegramClient
 from telethon.tl.types import Message
 from typing import cast, List
 
-from tengine.telegram import telegram_bot_utils
+from tengi.telegram import telegram_bot_utils
 
 
 class TelegramApi:

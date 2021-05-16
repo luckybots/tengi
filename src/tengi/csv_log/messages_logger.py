@@ -1,10 +1,10 @@
 from telebot.types import Message
 from typing import Iterable
 
-from tengine.csv_log.csv_logger import *
-from tengine import CommandParser, event, Hasher
-from tengine.telegram.telegram_bot_utils import encode_case_id, get_file_id
-from tengine.telegram.telegram_bot import EV_TEL_RECEIVED_MESSAGES, EV_TEL_SENT_MESSAGE
+from tengi.csv_log.csv_logger import *
+from tengi import CommandParser, event, Hasher
+from tengi.telegram.telegram_bot_utils import encode_case_id, get_file_id
+from tengi.telegram.telegram_bot import EV_TEL_RECEIVED_MESSAGES, EV_TEL_SENT_MESSAGE
 
 
 class MessagesLogger(CsvLogger):

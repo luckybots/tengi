@@ -1,4 +1,4 @@
-from tengine import CommandParam
+from tengi import CommandParam
 
 params = [
     CommandParam(name='--password',

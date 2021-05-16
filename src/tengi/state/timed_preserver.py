@@ -1,7 +1,7 @@
 import time
 import copy
 
-from tengine.state.preserver import *
+from tengi.state.preserver import *
 
 
 class TimedPreserver(Preserver):

@@ -1,6 +1,6 @@
-# tengine
+# tengi - Telegram bot ENGIne
 
-Telegram bot engine. Key features:
+Key features:
 - Button clicks with no domain name needed (polling)
 - Bot commands in bash-like style
 - Ability to send periodic updates to other components (not only to Telegram callbacks) 

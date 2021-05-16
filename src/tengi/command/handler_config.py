@@ -1,8 +1,8 @@
 import logging
 import json
 
-from tengine.command.command_handler import *
-from tengine.setup import config_utils
+from tengi.command.command_handler import *
+from tengi.setup import config_utils
 
 logger = logging.getLogger(__file__)
 

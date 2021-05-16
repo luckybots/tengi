@@ -2,7 +2,7 @@ from typing import Callable, Optional
 import logging
 
 from telebot.types import Message
-from tengine.telegram.telegram_bot import TelegramBot
+from tengi.telegram.telegram_bot import TelegramBot
 
 LogFunc = Optional[Callable[[str], None]]
 

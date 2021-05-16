@@ -4,8 +4,8 @@ from telebot.apihelper import ApiTelegramException
 from typing import Collection, List
 import logging
 
-from tengine import event
-from tengine.telegram import telegram_error
+from tengi import event
+from tengi.telegram import telegram_error
 
 logger = logging.getLogger(__file__)
 

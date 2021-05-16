@@ -1,8 +1,8 @@
 import abc
 from typing import Iterable
 
-from tengine.command.card import CommandCard
-from tengine.command.command_context import CommandContext
+from tengi.command.card import CommandCard
+from tengi.command.command_context import CommandContext
 
 
 class CommandHandler:

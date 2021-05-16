@@ -1,5 +1,5 @@
 from typing import List
-from tengine.command.command_handler import CommandHandler
+from tengi.command.command_handler import CommandHandler
 
 
 class CommandHandlerPool:

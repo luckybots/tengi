@@ -1,7 +1,7 @@
 import time
 import logging
 
-from tengine.state.abuse_detector import AbuseDetector
+from tengi.state.abuse_detector import AbuseDetector
 
 logger = logging.getLogger(__file__)
 

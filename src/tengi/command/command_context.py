@@ -1,11 +1,11 @@
 from argparse import Namespace
 from typing import Any, TYPE_CHECKING
-from tengine.telegram.reply_context import *
-from tengine.setup.config import Config
-from tengine.command.command_error import CommandMissingArgError
+from tengi.telegram.reply_context import *
+from tengi.setup.config import Config
+from tengi.command.command_error import CommandMissingArgError
 
 if TYPE_CHECKING:
-    from tengine.command.command_parser import CommandParser
+    from tengi.command.command_parser import CommandParser
 
 
 class CommandContext(ReplyContextTelegram):

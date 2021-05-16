@@ -20,7 +20,8 @@ class Config(JsonStore):
             if k not in self:
                 missing_keys.append(k)
 
-        assert len(missing_keys) == 0, f'Keys are missing from config: {self._path}: {missing_keys}'
+        assert len(missing_keys) == 0, f'Add values {missing_keys} to the config {self._path}. ' \
+                                       f'Reference: {example_path}'
 
     @property
     def path_str(self) -> str:

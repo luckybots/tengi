@@ -3,7 +3,7 @@ from typing import Any, Optional
 import base64
 import logging
 
-from tengine.setup.config import Config
+from tengi.setup.config import Config
 
 logger = logging.getLogger(__file__)
 
