@@ -8,6 +8,10 @@ logger = logging.getLogger(__file__)
 
 class Config(JsonStore):
     def __init__(self, config_path: Path, example_path: Path):
+        if not example_path.is_file():
+            raise FileNotFoundError(f'Cannot find config example {example_path}')
+        if not config_path.is_file():
+            raise FileNotFoundError(f'Please create {config_path}, use {example_path} as an example')
         super().__init__(str(config_path))
 
         self.assert_keys_present(example_path)
