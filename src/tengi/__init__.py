@@ -9,7 +9,7 @@ from tengi.telegram.inbox_hub import TelegramInboxHub
 from tengi.telegram.inbox_handler import TelegramInboxHandler
 from tengi.telegram import telegram_error
 from tengi.telegram.telegram_api import TelegramApi
-from tengi.telegram.reply_context import ReplyContext, ReplyContextTelegram, ReplyContextSuppress
+from tengi.telegram.reply_context import ReplyContext, ReplyContextTelegram, ReplyContextLogOnly
 from tengi.command.command_handler import CommandHandler
 from tengi.command.handler_essentials import CommandHandlerEssentials
 from tengi.command.handler_password import CommandHandlerPassword

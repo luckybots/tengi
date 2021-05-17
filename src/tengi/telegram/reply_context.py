@@ -67,10 +67,5 @@ class ReplyContextTelegram(ReplyContext):
                                     text=text)
 
 
-class ReplyContextSuppress(ReplyContext):
-
-    def reply(self,
-              text: str,
-              log_level: Optional[int] = logging.DEBUG,
-              stacklevel: int = 2) -> None:
-        pass
+class ReplyContextLogOnly(ReplyContext):
+    pass
