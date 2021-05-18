@@ -15,5 +15,6 @@ Key features:
 In order to add `tengi` source code to your project run the following in your project environment
 ```
 cd [TENGI_REPO_FOLDER]
+pip uninstall tengi
 python setup_develop.py develop
 ```
