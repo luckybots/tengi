@@ -1,8 +1,12 @@
 import logging
 from typing import Iterable, Callable, Any, List
+import inspect
+from telebot.apihelper import ApiTelegramException
+
 from tengi import TelegramCursor
 from tengi.telegram.inbox_handler import *
-import inspect
+from tengi.telegram import  telegram_error
+
 
 logger = logging.getLogger(__file__)
 
@@ -33,7 +37,15 @@ class TelegramInboxHub:
 
     def update(self):
         allowed_updates = list(self.handlers.keys())
-        updates = self.telegram_cursor.get_new_updates(allowed_updates=allowed_updates)
+        try:
+            updates = self.telegram_cursor.get_new_updates(allowed_updates=allowed_updates)
+        except ApiTelegramException as ex:
+            if ex.error_code == telegram_error.BAD_GATEWAY:
+                #  Telegram is temporary unavailable
+                logger.info('Telegram is temporary unavailable, further update is skipped')
+                return
+            else:
+                raise ex
 
         for u in updates:
             try:

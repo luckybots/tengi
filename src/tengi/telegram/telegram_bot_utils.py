@@ -1,7 +1,7 @@
 import json
 from json import JSONDecodeError
 from telebot import types
-from typing import Union, Iterable, List
+from typing import Union, Iterable, List, Optional
 
 
 def encode_button_data(handler: str,
@@ -138,3 +138,36 @@ def get_short_chat_id(chat_id: int):
         short_str_chat_id = str_chat_id[len(prefix):]
         result = int(short_str_chat_id)
     return result
+
+
+def escape_html_tags(text: str) -> str:
+    """
+    Current escaping is a hotfix. The issue with replacement is that with a proper symbol escaping the message entities
+    (offset and length) should also be updated.
+    The hotfix idea is  to remove special symbols and keep message length the same.
+    Proper escaping should do:
+    & -> &amp;
+    < -> &lt;
+    > -> &gt;
+    """
+    text = text \
+        .replace('&', '_') \
+        .replace('<', '_') \
+        .replace('>', '_')
+    return text
+
+
+def message_html_text_fixed(msg: types.Message) -> Optional[str]:
+    if msg.text is None:
+        return None
+    msg_copy = types.Message.de_json(msg.json)
+    msg_copy.text = escape_html_tags(msg_copy.text)
+    return msg_copy.html_text
+
+
+def message_html_caption_fixed(msg: types.Message) -> Optional[str]:
+    if msg.caption is None:
+        return None
+    msg_copy = types.Message.de_json(msg.json)
+    msg_copy.caption = escape_html_tags(msg_copy.caption)
+    return msg_copy.html_caption

@@ -5,7 +5,7 @@ from typing import Collection, List
 import logging
 
 from tengi import event
-from tengi.telegram import telegram_error
+from tengi.telegram import telegram_error, telegram_bot_utils
 
 logger = logging.getLogger(__file__)
 
@@ -57,9 +57,9 @@ class TelegramBot:
                            reply_markup=reply_markup,
                            reply_to_message_id=reply_to_message_id)
         if src_message.text is not None:
-            params_dict['text'] = src_message.html_text
+            params_dict['text'] = telegram_bot_utils.message_html_text_fixed(src_message)
         elif src_message.caption is not None:
-            params_dict['caption'] = src_message.html_caption
+            params_dict['caption'] = telegram_bot_utils.message_html_caption_fixed(src_message)
 
         if src_message.content_type == 'text':
             send_func = self.bot.send_message
