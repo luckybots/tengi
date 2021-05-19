@@ -35,6 +35,13 @@ class CommandContext(ReplyContextTelegram):
                 raise CommandMissingArgError(f'--{arg_name} should have type {cast_func}')
         return value
 
-    def get_optional_arg(self, arg_name: str, default: Any) -> Any:
+    def get_optional_arg(self, arg_name: str,
+                         default: Any,
+                         cast_func: Optional[Callable] = None) -> Any:
         value = getattr(self.args, arg_name, default)
+        if cast_func is not None:
+            try:
+                value = cast_func(value)
+            except ValueError:
+                raise CommandMissingArgError(f'--{arg_name} should have type {cast_func}')
         return value
