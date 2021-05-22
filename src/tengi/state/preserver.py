@@ -16,3 +16,6 @@ class Preserver:
     def _save_state(self):
         # noinspection PyProtectedMember
         self.state._save()
+        
+    def as_dict(self) -> dict:
+        return self.state.__dict__['_data'].copy()
