@@ -5,7 +5,7 @@ from telebot.apihelper import ApiTelegramException
 
 from tengi import TelegramCursor
 from tengi.telegram.inbox_handler import *
-from tengi.telegram import  telegram_error
+from tengi.telegram import telegram_error, telegram_bot_utils
 
 
 logger = logging.getLogger(__file__)
@@ -42,7 +42,7 @@ class TelegramInboxHub:
         except ApiTelegramException as ex:
             if ex.error_code == telegram_error.BAD_GATEWAY:
                 #  Telegram is temporary unavailable
-                logger.info('Telegram is temporary unavailable, further update is skipped')
+                logger.info('Telegram is temporary unavailable, current update is skipped')
                 return
             else:
                 raise ex
@@ -64,7 +64,13 @@ class TelegramInboxHub:
                                                item=item,
                                                handler_func=handler_func)
                 if not handled:
-                    logger.info(f'Update not handled: {update_type}, {u.update_id}')
+                    chat = telegram_bot_utils.try_get_chat_from_update(u)
+                    chat_id = None if chat is None else chat.id
+                    chat_username = None if chat is None else chat.username
+                    message = telegram_bot_utils.try_get_message_from_update(u)
+                    message_id = None if message is None else message.id
+                    logger.info(f'Update not handled: type={update_type}, update_id={u.update_id}, chat_id={chat_id}, '
+                                f'chat_username={chat_username}, message_id={message_id}')
             except Exception as ex:
                 logger.exception(ex)
 

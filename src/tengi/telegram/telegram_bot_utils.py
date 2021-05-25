@@ -171,3 +171,31 @@ def message_html_caption_fixed(msg: types.Message) -> Optional[str]:
     msg_copy = types.Message.de_json(msg.json)
     msg_copy.caption = escape_html_tags(msg_copy.caption)
     return msg_copy.html_caption
+
+
+def try_get_chat_from_update(update: types.Update) -> Optional[types.Chat]:
+    fields_to_check = ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'my_chat_member',
+                       'chat_member']
+    for field in fields_to_check:
+        inner_obj = getattr(update, field, None)
+        if inner_obj is not None:
+            chat = getattr(inner_obj, 'chat', None)
+            return chat
+
+
+def try_get_message_from_update(update: types.Update) -> Optional[types.Message]:
+    fields_to_check = ['message', 'edited_message', 'channel_post', 'edited_channel_post']
+    for field in fields_to_check:
+        message = getattr(update, field, None)
+        if message is not None:
+            return message
+
+
+def try_get_type_from_update(update: types.Update) -> Optional[str]:
+    fields_to_check = ['message', 'edited_message', 'channel_post', 'edited_channel_post', 'inline_query',
+                       'chosen_inline_result', 'callback_query', 'shipping_query', 'pre_checkout_query',
+                       'poll', 'poll_answer', 'my_chat_member', 'chat_member']
+    for field in fields_to_check:
+        inner_obj = getattr(update, field, None)
+        if inner_obj is not None:
+            return field
