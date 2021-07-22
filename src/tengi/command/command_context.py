@@ -38,7 +38,9 @@ class CommandContext(ReplyContextTelegram):
     def get_optional_arg(self, arg_name: str,
                          default: Any,
                          cast_func: Optional[Callable] = None) -> Any:
-        value = getattr(self.args, arg_name, default)
+        value = getattr(self.args, arg_name)
+        if value is None:
+            value = default
         if cast_func is not None:
             try:
                 value = cast_func(value)
