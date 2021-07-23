@@ -13,4 +13,7 @@ params = [
     CommandParam(name='--chat_id',
                  help_str='Chat id to perform operation on',
                  param_type=str),
+    CommandParam(name='--text',
+                 help_str='Text to perform operation with',
+                 param_type=str),
 ]
